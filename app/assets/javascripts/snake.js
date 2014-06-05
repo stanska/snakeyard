@@ -46,12 +46,20 @@
  function onClose(evt, snake_name) {
      gameOver();
      writeToScreen("DISCONNECTED" +  + evt.code + evt.reason);
+	 document.getElementById("startSnakeLink").disabled = true;
+	 document.getElementById("startGameLink").disabled = false;
+	 document.getElementById("gameOverLink").disabled = true;
  }
 
  function onMessage(evt, snake_name) {
 	 if (evt.data.lastIndexOf("POOL:", 0) === 0) { snake_pool = evt.data.replace("POOL:","");}
 	 else if (evt.data.lastIndexOf("APPLE:", 0) === 0) { apple(evt.data.replace("APPLE:",""));}
-	 else if (evt.data == "Game Over") writeToScreen("GAME OVER");
+	 else if (evt.data == "Game Over") { 
+		 writeToScreen("GAME OVER");
+		 document.getElementById("startSnakeLink").disabled = true;
+		 document.getElementById("startGameLink").disabled = false;
+		 document.getElementById("gameOverLink").disabled = true;
+	 }
      else if (evt.data > 0) on(evt.data);
      else off(Math.abs(evt.data));
  }
@@ -109,8 +117,5 @@
      $.ajax({
          url: "http://" + host + "/stopgame/" + snake_pool,
          context: document.body
-     }).done(function () {
-    	 document.getElementById("startSnakeLink").disabled = true;
-    	 document.getElementById("startGameLink").disabled = false;
-    	 document.getElementById("gameOverLink").disabled = true;});
+     }).done(function () {});
  }
