@@ -1,0 +1,26 @@
+<html>
+<head>
+ 	<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/snake.css")">
+    <script type='text/javascript' src='@routes.Assets.at("javascripts/snake.js")'></script>
+    <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
+</head>
+<body>
+
+	<button onclick="javascript:startGame(@snakeyard.actor.SnakePoolConfig.row, @snakeyard.actor.SnakePoolConfig.col)" id="startGameLink">Start Game</button>
+	<button onclick="javascript:addSnake()" id="startSnakeLink" disabled>Start Snake</button>
+	<button onclick="javascript:gameOver()" id="gameOverLink" disabled>Game Over</button>
+	<br/>
+	<div id="snakeYard">
+	<table>
+			@for(row <- 1 to snakeyard.actor.SnakePoolConfig.row) {
+			<tr>
+				@for(col <- 1 to snakeyard.actor.SnakePoolConfig.col; cnt = (row-1)*snakeyard.actor.SnakePoolConfig.col+col) {
+					<td id="snakeYardCell@cnt" onclick="javascript:onCellMouseClick(@cnt)">&nbsp;</td>	
+					}				
+			</tr>	
+	    	}
+	</table>
+	</div>
+	<p id="status"></p>
+</body>
+</html>

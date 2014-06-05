@@ -1,0 +1,12 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+GET   /                  snakeyard.SnakeController.index
+GET   /startgame         snakeyard.SnakeController.startGame
+GET   /addsnake/:pool    snakeyard.SnakeController.addSnake(pool)
+GET   /movesnake/:pool   snakeyard.SnakeController.move(pool)
+GET   /stopgame/:pool    snakeyard.SnakeController.stop(pool)
+
+# Map static resources from the /public folder to the /assets URL path
+GET   /assets/*file      controllers.Assets.at(path="/public", file)
+GET   /webjars/*file     controllers.WebJarAssets.at(file)
