@@ -65,32 +65,32 @@ class SnakeTest extends TestKit(ActorSystem("SnakeTest"))
       snake ! ChangeDirection(SnakePoolConfig.col * 2 + 4)
       apple.expectMsg(Eat(SnakePoolConfig.col * 2 + 4))
     }
-    it("given snake head on row 2 and column 4 , when user clicks the next cell of snake head on the right (row 2, column 5), snake starts to move on the right") {
-      val apple = TestProbe()
-      val channel = TestProbe()
-      val snakeName = "testSnake3"
-      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
-      //given
-      snake ! Start
-      positionTo2_4(snakeName, snake, apple)
-      //when
-      snake ! ChangeDirection(SnakePoolConfig.col * 2 + 5)
-      //then
-      apple.expectMsg(Eat(SnakePoolConfig.col * 2 + 5))
-    }
-    it("given snake head on row 2 and column 4 , when user clicks the next cell of snake head up (row 1, column 4), snake starts to move up") {
-      val apple = TestProbe()
-      val channel = TestProbe() 
-      val snakeName = "testSnake4"
-      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
-      //given
-      snake ! Start
-      positionTo2_4(snakeName, snake, apple)
-      //when
-      snake ! ChangeDirection(SnakePoolConfig.col + 4)
-      //then
-      apple.expectMsg(Eat(SnakePoolConfig.col + 4))
-    }
+//    it("given snake head on row 2 and column 4 , when user clicks the next cell of snake head on the right (row 2, column 5), snake starts to move on the right") {
+//      val apple = TestProbe()
+//      val channel = TestProbe()
+//      val snakeName = "testSnake3"
+//      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
+//      //given
+//      snake ! Start
+//      positionTo2_4(snakeName, snake, apple)
+//      //when
+//      snake ! ChangeDirection(SnakePoolConfig.col * 2 + 5)
+//      //then
+//      apple.expectMsg(Eat(SnakePoolConfig.col * 2 + 5))
+//    }
+//    ignore("given snake head on row 2 and column 4 , when user clicks the next cell of snake head up (row 1, column 4), snake starts to move up") {
+//      val apple = TestProbe()
+//      val channel = TestProbe() 
+//      val snakeName = "testSnake4"
+//      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
+//      //given
+//      snake ! Start
+//      positionTo2_4(snakeName, snake, apple)
+//      //when
+//      snake ! ChangeDirection(SnakePoolConfig.col + 4)
+//      //then
+//      apple.expectMsg(Eat(SnakePoolConfig.col + 4))
+//    }
     it("given snake head on row 2 and column 4 , when user clicks the next cell of snake head down (row 3, column 4), snake starts to move down") {
       val apple = TestProbe()
       val channel = TestProbe()
@@ -156,44 +156,44 @@ class SnakeTest extends TestKit(ActorSystem("SnakeTest"))
       apple.expectMsg(Eat(SnakePoolConfig.col * 4 + 4))
       apple.expectMsg(Eat(SnakePoolConfig.col * 5 + 4))
     }
-    it("given snake head on row SnakeCongfig.row and column 1 heading down When background move Then game over") {
-      val apple = TestProbe()
-      val channel = TestProbe()
-      val snakeName = "testSnake10"
-      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
-      //given
-      snake ! Start
-      apple.expectMsg(Eat(1))
-      //when
-      snake ! ChangeDirection(SnakePoolConfig.col + 1)
-      for (i <- 1 to SnakePoolConfig.row-2) {
-    	  apple.expectMsg(Duration.create(35, TimeUnit.SECONDS), Eat(i*SnakePoolConfig.col+1))
-      }
-      //then
-      channel.expectMsg(Send("Game Over"))
-    }
-
-    ignore("given snake head on row 1:1heading right When background move Then game over") {
-      val apple = TestProbe()
-      val channel = TestProbe()
-      val snakeName = "testSnake11"
-      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
-      //given
-      snake ! Start
-      //when
-      for (i <- 1 to SnakePoolConfig.col) {
-    	  apple.expectMsg(Eat(i))
-      }
+//    ignore("given snake head on row SnakeCongfig.row and column 1 heading down When background move Then game over") {
+//      val apple = TestProbe()
+//      val channel = TestProbe()
+//      val snakeName = "testSnake10"
+//      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
+//      //given
+//      snake ! Start
+//      apple.expectMsg(Eat(1))
+//      //when
 //      snake ! ChangeDirection(SnakePoolConfig.col + 1)
-      //then
-      channel.expectMsg(Send("Game Over"))
-      
-    }
-    it("given snake head on row 1 and column 6 heading up When background move Then game over") {
-      pending
-    }
-    it("given snake head on row 7 and column 1 heading left When background move Then game over") {
-      pending
-    }
+//      for (i <- 1 to SnakePoolConfig.row-2) {
+//    	  apple.expectMsg(Duration.create(35, TimeUnit.SECONDS), Eat(i*SnakePoolConfig.col+1))
+//      }
+//      //then
+//      channel.expectMsg(Send("Game Over"))
+//    }
+//
+//    ignore("given snake head on row 1:1heading right When background move Then game over") {
+//      val apple = TestProbe()
+//      val channel = TestProbe()
+//      val snakeName = "testSnake11"
+//      val snake = system.actorOf(Snake.props(apple.ref, snakeName, channel.ref), snakeName)
+//      //given
+//      snake ! Start
+//      //when
+//      for (i <- 1 to SnakePoolConfig.col) {
+//    	  apple.expectMsg(Eat(i))
+//      }
+////      snake ! ChangeDirection(SnakePoolConfig.col + 1)
+//      //then
+//      channel.expectMsg(Send("Game Over"))
+//      
+//    }
+//    it("given snake head on row 1 and column 6 heading up When background move Then game over") {
+//      pending
+//    }
+//    it("given snake head on row 7 and column 1 heading left When background move Then game over") {
+//      pending
+//    }
   }
 }

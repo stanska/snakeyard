@@ -34,7 +34,7 @@ class SnakePool(webSocketChannel: ActorRef) extends Actor {
     case cd: ChangeDirection => snakes.map(snakesByName => snakesByName._2 ! cd)
   }
 
-//  override def postStop() {
-//    snakes.map(snakeByName => snakeByName._2 ! Kill)
-//  }
+  override def postStop() {
+    snakes.map(snakeByName => snakeByName._2 ! Kill)
+  }
 }
