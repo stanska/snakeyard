@@ -10,6 +10,14 @@
 	<button onclick="javascript:addSnake()" id="startSnakeLink" disabled>Start Snake</button>
 	<button onclick="javascript:gameOver()" id="gameOverLink" disabled>Game Over</button>
 	<br/>
+	<div>
+	<b>Rules</b><br/>
+	After starting a game, you can add as many snakes as you like. Currently all snakes are striving for the one apple.<br/> 
+	A snake is controlled via mouse. To change snake's direction, click on the cells just next to the snake's head cell.<br/>
+	Example: to move a snake down when snake's head is on cell row 2 and column 4, click on row 3 and column 4.<br/>
+	The game ends when a snake eats its tale or a snake goes outside the snakeyard.<br/>
+	</div>
+	<br/>
 	<div id="snakeYard">
 	<table>
 			@for(row <- 1 to snakeyard.actor.SnakePoolConfig.row) {

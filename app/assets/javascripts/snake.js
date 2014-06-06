@@ -19,9 +19,7 @@
  function startGame(row, col) {
 	 for ( i = 1; i <= row*col; i++) {		  
 		 off(i)
-	 }
-     var snake_name = "snake" + snake_counter++
-     
+	 }     
      websocket = new WebSocket(wsUri + "startgame");
 
      websocket.onopen = function (evt) {
@@ -38,27 +36,33 @@
  function onOpen(evt, snake_name) {
      writeToScreen("CONNECTED");
      websocket.send("GET POOL");
+     enableSnakesButton();
+ }
+
+ function enableSnakesButton(){
 	 document.getElementById("startSnakeLink").disabled = false;
 	 document.getElementById("gameOverLink").disabled = false
 	 document.getElementById("startGameLink").disabled = true;
- }
 
+ }
+ 
  function onClose(evt, snake_name) {
      gameOver();
      writeToScreen("DISCONNECTED" +  + evt.code + evt.reason);
+     disableSnakesButton();
+ }
+
+ function disableSnakesButton(){
 	 document.getElementById("startSnakeLink").disabled = true;
 	 document.getElementById("startGameLink").disabled = false;
 	 document.getElementById("gameOverLink").disabled = true;
  }
-
  function onMessage(evt, snake_name) {
 	 if (evt.data.lastIndexOf("POOL:", 0) === 0) { snake_pool = evt.data.replace("POOL:","");}
 	 else if (evt.data.lastIndexOf("APPLE:", 0) === 0) { apple(evt.data.replace("APPLE:",""));}
 	 else if (evt.data == "Game Over") { 
 		 writeToScreen("GAME OVER");
-		 document.getElementById("startSnakeLink").disabled = true;
-		 document.getElementById("startGameLink").disabled = false;
-		 document.getElementById("gameOverLink").disabled = true;
+		 disableSnakesButton();
 	 }
      else if (evt.data > 0) on(evt.data);
      else off(Math.abs(evt.data));

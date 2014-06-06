@@ -28,7 +28,6 @@ class SnakePool(webSocketChannel: ActorRef) extends Actor {
       val snake = context.actorOf(Snake.props(apple, snakeName, webSocketChannel), snakeName)
       snake ! Start
       snakes += (snakeName -> snake)
-      println(snakes)
     }
 
     case cd: ChangeDirection => snakes.map(snakesByName => snakesByName._2 ! cd)

@@ -12,9 +12,6 @@ object WebSocketChannel {
 
 class WebSocketChannel(channel: Concurrent.Channel[String]) extends Actor {
 	def receive = {
-	  case Send(data) => {
-	    println(data)
-	    channel.push(data)
-	  }
+	  case Send(data) => channel.push(data)
 	}
 }

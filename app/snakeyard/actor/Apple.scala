@@ -4,10 +4,10 @@ import play.api.libs.iteratee.Concurrent
 import scala.util.Random
 import akka.actor.Props
 import akka.actor.Actor
-import akka.actor.actorRef2Scala
 import akka.actor.ActorRef
 
 object NewApple
+
 case class Eat(coordinates: Int)
 
 object Apple {

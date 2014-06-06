@@ -1,22 +1,17 @@
 package snakeyard
 
-import play.libs.Akka
-import play.api.mvc.Action
-import play.api.mvc.WebSocket
-import play.api.mvc.Controller
-import scala.util.Random
+import akka.actor.ActorSelection.toScala
+import akka.actor.PoisonPill
 import play.api.libs.iteratee.Concurrent
 import play.api.libs.iteratee.Iteratee
-import akka.actor.PoisonPill
-import akka.actor.actorRef2Scala
-import snakeyard.actor.Apple
-import snakeyard.actor.Snake
-import snakeyard.actor.Start
-import snakeyard.actor.ChangeDirection
+import play.api.mvc.Action
+import play.api.mvc.Controller
+import play.api.mvc.WebSocket
+import play.libs.Akka
 import snakeyard.actor.WebSocketChannel
 import snakeyard.actor.SnakePool
 import snakeyard.actor.NewSnake
-import play.api.libs.iteratee.Enumerator
+import snakeyard.actor.ChangeDirection
 
 object SnakeController extends Controller {
 

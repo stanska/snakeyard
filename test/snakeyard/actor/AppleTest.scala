@@ -1,19 +1,16 @@
 package snakeyard.actor
-
+ 
 import scala.util.Random
-import org.mockito.Mockito.verify
+
 import org.scalatest.FunSpec
-import org.specs2.matcher.ShouldMatchers
 import org.specs2.mock.Mockito
+
 import akka.actor.ActorSystem
-import akka.actor.actorRef2Scala
 import akka.testkit.TestKit
 import akka.testkit.TestProbe
-import play.api.libs.iteratee.Concurrent
 
 class AppleTest extends TestKit(ActorSystem("AppleTest"))
   with FunSpec
-  with ShouldMatchers
   with Mockito {
 
   describe("Apple Test") {
@@ -48,8 +45,9 @@ class AppleTest extends TestKit(ActorSystem("AppleTest"))
       val channel = TestProbe()
       val appleName = "testApple3"
       val random = mock[Random]
+      random.nextInt(SnakePoolConfig.row * SnakePoolConfig.col - 1) returns 123
       val apple = system.actorOf(Apple.props(random, channel.ref), appleName)
-
+      
       //when
       apple ! NewApple
       client.send(apple, Eat(135)) 

@@ -1,30 +1,14 @@
 package snakeyard.actor
 
-import java.util.concurrent.TimeUnit
-
-import scala.concurrent.duration.Duration
-
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.scalatest.BeforeAndAfterAll
 import org.scalatest.FunSpec
-import org.scalatest.GivenWhenThen
-import org.specs2.matcher.ShouldMatchers
-import org.specs2.mock.Mockito
 
 import akka.actor.ActorRef
 import akka.actor.ActorSystem
-import akka.actor.actorRef2Scala
 import akka.testkit.TestKit
 import akka.testkit.TestProbe
-import play.api.libs.iteratee.Concurrent
 
 class SnakeTest extends TestKit(ActorSystem("SnakeTest"))
-  with FunSpec
-  with ShouldMatchers
-  with GivenWhenThen
-  with BeforeAndAfterAll
-  with Mockito {
+  with FunSpec {
 
   describe("Snake Actor Test") {
     it("given new snake when started starts to the right, from thee first cell on the first line") {
@@ -167,7 +151,7 @@ class SnakeTest extends TestKit(ActorSystem("SnakeTest"))
 //      //when
 //      snake ! ChangeDirection(SnakePoolConfig.col + 1)
 //      for (i <- 1 to SnakePoolConfig.row-2) {
-//    	  apple.expectMsg(Duration.create(35, TimeUnit.SECONDS), Eat(i*SnakePoolConfig.col+1))
+//    	  apple.expectMsg(Duration.create(35 seconds), Eat(i*SnakePoolConfig.col+1))
 //      }
 //      //then
 //      channel.expectMsg(Send("Game Over"))

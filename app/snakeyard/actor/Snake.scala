@@ -1,21 +1,21 @@
 package snakeyard.actor
 
-import play.api.libs.iteratee.Concurrent
-import akka.actor.ActorRef
-import akka.actor.Props
 import scala.concurrent.ExecutionContext.Implicits.global
-import akka.actor.Props
+import scala.concurrent.duration.DurationInt
+
 import akka.actor.Actor
-import scala.concurrent.duration.Duration
-import java.util.concurrent.TimeUnit
+import akka.actor.ActorRef
 import akka.actor.PoisonPill
+import akka.actor.Props
 
 object SnakeConfig {
   val marchTimeSeconds = 1
 }
 
 object Start
-object Stop
+
+object StayHungry
+object Grow
 
 trait Direction
 object Up extends Direction
@@ -23,8 +23,6 @@ object Down extends Direction
 object Left extends Direction
 object Right extends Direction
 
-object StayHungry
-object Grow
 
 object Snake {
   def props(apple: ActorRef, uuid: String, webSocketChannel: ActorRef): Props = Props(new Snake(apple, uuid, webSocketChannel))
@@ -32,7 +30,7 @@ object Snake {
 
 class Snake(apple: ActorRef, name: String, webSocketChannel: ActorRef) extends Actor {
   val snakeBody = new scala.collection.mutable.Queue[Int]
-  var march = context.system.scheduler.schedule(Duration.create(0, TimeUnit.SECONDS), Duration.create(SnakeConfig.marchTimeSeconds, TimeUnit.SECONDS),
+  var march = context.system.scheduler.schedule(0 seconds, SnakeConfig.marchTimeSeconds.seconds,
     self, Right)
 
   def receive = {
@@ -83,7 +81,7 @@ class Snake(apple: ActorRef, name: String, webSocketChannel: ActorRef) extends A
         }
       if (direction != None) {
         march.cancel
-        march = context.system.scheduler.schedule(Duration.create(0, TimeUnit.SECONDS), Duration.create(SnakeConfig.marchTimeSeconds, TimeUnit.SECONDS),
+        march = context.system.scheduler.schedule(0 seconds, SnakeConfig.marchTimeSeconds seconds,
           self, direction)
         self ! direction
       }
@@ -93,11 +91,6 @@ class Snake(apple: ActorRef, name: String, webSocketChannel: ActorRef) extends A
         snakeBody.enqueue(0)
         self ! ChangeDirection(1)
 
-      }
-    case Stop =>
-      {
-        march.cancel
-        self ! PoisonPill
       }
   }
   def gameOver = {
