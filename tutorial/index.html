@@ -7,13 +7,13 @@
          <h2>Reactive Snake Activator Template</h2>
          This template uses the popular snake game as an inbrowser app to demonstrate akka actors using web sockets.
          Actor Model gives a very natural representation of domain logic by resembling real objects and its interactioncs. I think this makes the code clearer and easy to read.
-         <a href="#app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> represents a bundle of snakes, it can create snakes and upon game over kill them all. 
-         <a href="#app/snakeyard/actor/Snake.scala" class="shortcut">Snake</a> represents a single snake, having cell coordinates as an internal state. Snake can be started, moved (Up, Down, Left or Right) or eat apples. All 
-         snakes strive for the one apple. Currently <a href="#app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> can be created or is eaten. When apple is eaten, a new one is created.  The application can be easily extended with more apples, since <a href="#app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> is also an actor. 
-         Snakes and apple need to send data to browser via web socket. In order to have web socket writing encapsulated we have <a href="#app/snakeyard/actor/WebSocketChannel.scala" class="shortcut">WebSocketChannel</a> which handles Send messages.
+         <a href="#code/app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> represents a bundle of snakes, it can create snakes and upon game over kill them all. 
+         <a href="#code/app/snakeyard/actor/Snake.scala" class="shortcut">Snake</a> represents a single snake, having cell coordinates as an internal state. Snake can be started, moved (Up, Down, Left or Right) or eat apples. All 
+         snakes strive for the one apple. Currently <a href="#code/app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> can be created or is eaten. When apple is eaten, a new one is created.  The application can be easily extended with more apples, since <a href="#code/app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> is also an actor. 
+         Snakes and apple need to send data to browser via web socket. In order to have web socket writing encapsulated we have <a href="#code/app/snakeyard/actor/WebSocketChannel.scala" class="shortcut">WebSocketChannel</a> which handles Send messages.
          WebSocketChannel actor helps unit test verification for Snake and Apple unit tests. 
          <br/>
-         All browser requests are handled by <a href="#app/snakeyard/actor/SnakeController.scala" class="shortcut">SnakeController</a>.
+         All browser requests are handled by <a href="#code/app/snakeyard/actor/SnakeController.scala" class="shortcut">SnakeController</a>.
          <br/>
          More than one snake pool can run concurrently, if you want to see the power of concurrency and actors, you may test application on tho browser instances.
       </div>
@@ -55,10 +55,10 @@ object SnakeController extends Controller {
          <p>
          There are several ways to <a href="http://doc.akka.io/docs/akka/snapshot/scala/actors.html">stop an actor</a>.
          In the example application asynchronous stop is used by sending <code>PoisonPill</code> message.
-         The following line of code show how  <a href="#app/snakeyard/actor/Snake.scala" class="shortcut">snake</a> dies when eats its tale
+         The following line of code show how  <a href="#code/app/snakeyard/actor/Snake.scala" class="shortcut">snake</a> dies when eats its tale
          <pre><code>self ! PoisonPill</code></pre>
          <br>
-         Note that all snakes and the pool die when at least one snake dies. This is covered by <a href="#app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> supervisor who listens for <code>Terminated</code> child messages
+         Note that all snakes and the pool die when at least one snake dies. This is covered by <a href="#code/app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> supervisor who listens for <code>Terminated</code> child messages
          after register snakes with <code>DeathWatch</code>.
 	<pre><code>
 case NewSnake(snakeName) => {
@@ -107,7 +107,7 @@ snakePool ! NewSnake(snakeName)
          Web Sockets is a next-generation bidirectional communication technology for web applications which operates over a single socket and is exposed via a JavaScript interface in HTML 5 compliant browsers.<br><br>
          <b>Creating a web socket example</b><br>
          <pre><code>
-<a href="#app/assets/javascript/snake.js" class="shortcut">snake.js</a>
+<a href="#code/app/assets/javascript/snake.js" class="shortcut">snake.js</a>
 function startGame(row, col) {
 	 for ( i = 1; i <= row*col; i++) {		  
 		 off(i)
@@ -146,7 +146,7 @@ GET   /startgame         snakeyard.SnakeController.startGame
          In the example application when socket is open, browser send get pool command and pool name is returned. Pool is keept for future requests, for example to add or move a snake in the pool.<br><br>
          <b>Send a message to server</b><br>
          <pre><code>
-<a href="#app/assets/javascript/snake.js" class="shortcut">snake.js</a>
+<a href="#code/app/assets/javascript/snake.js" class="shortcut">snake.js</a>
 function onOpen(evt, snake_name) {
 	 writeToScreen("CONNECTED");
 	 websocket.send("GET POOL");
