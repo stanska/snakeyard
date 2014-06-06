@@ -23,17 +23,17 @@
      websocket = new WebSocket(wsUri + "startgame");
 
      websocket.onopen = function (evt) {
-    	 onOpen(evt, snake_name)
+    	 onOpen(evt)
      };
      websocket.onclose = function (evt) {
-         onClose(evt, snake_name)
+         onClose(evt)
      };
      websocket.onmessage = function (evt) {
-         onMessage(evt, snake_name)
+         onMessage(evt)
      };
  }
 
- function onOpen(evt, snake_name) {
+ function onOpen(evt) {
      writeToScreen("CONNECTED");
      websocket.send("GET POOL");
      enableSnakesButton();
@@ -46,7 +46,7 @@
 
  }
  
- function onClose(evt, snake_name) {
+ function onClose(evt) {
      gameOver();
      writeToScreen("DISCONNECTED" +  + evt.code + evt.reason);
      disableSnakesButton();
@@ -57,7 +57,7 @@
 	 document.getElementById("startGameLink").disabled = false;
 	 document.getElementById("gameOverLink").disabled = true;
  }
- function onMessage(evt, snake_name) {
+ function onMessage(evt) {
 	 if (evt.data.lastIndexOf("POOL:", 0) === 0) { snake_pool = evt.data.replace("POOL:","");}
 	 else if (evt.data.lastIndexOf("APPLE:", 0) === 0) { apple(evt.data.replace("APPLE:",""));}
 	 else if (evt.data == "Game Over") { 
