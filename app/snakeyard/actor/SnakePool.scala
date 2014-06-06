@@ -6,6 +6,9 @@ import akka.actor.Props
 import scala.util.Random
 import akka.actor.PoisonPill
 import akka.actor.Kill
+import akka.actor.AllForOneStrategy
+import akka.actor.SupervisorStrategy._
+import akka.actor.Terminated
 
 object SnakePoolConfig {
   val row = 10
@@ -20,6 +23,11 @@ object SnakePool {
 }
 
 class SnakePool(webSocketChannel: ActorRef) extends Actor {
+  
+  override val supervisorStrategy = AllForOneStrategy() {
+    case anyException => Stop //if something happens to one snake, kill them all
+  }
+  
   val apple = context.actorOf(Apple.props(new Random(), webSocketChannel))
   apple ! NewApple
   var snakes = Map.empty[String, ActorRef]
@@ -28,12 +36,14 @@ class SnakePool(webSocketChannel: ActorRef) extends Actor {
       val snake = context.actorOf(Snake.props(apple, snakeName, webSocketChannel), snakeName)
       snake ! Start
       snakes += (snakeName -> snake)
+      context.watch(snake)
     }
-
+    case t: Terminated => self ! PoisonPill
     case cd: ChangeDirection => snakes.map(snakesByName => snakesByName._2 ! cd)
   }
-
+  
   override def postStop() {
+    webSocketChannel ! Send("Game Over")
     snakes.map(snakeByName => snakeByName._2 ! Kill)
   }
 }

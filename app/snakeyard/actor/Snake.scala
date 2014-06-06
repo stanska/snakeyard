@@ -16,13 +16,11 @@ object Start
 
 object StayHungry
 object Grow
-
 trait Direction
 object Up extends Direction
 object Down extends Direction
 object Left extends Direction
 object Right extends Direction
-
 
 object Snake {
   def props(apple: ActorRef, uuid: String, webSocketChannel: ActorRef): Props = Props(new Snake(apple, uuid, webSocketChannel))
@@ -94,8 +92,7 @@ class Snake(apple: ActorRef, name: String, webSocketChannel: ActorRef) extends A
       }
   }
   def gameOver = {
-    webSocketChannel ! Send("Game Over")
-    context.parent ! PoisonPill
+    self ! PoisonPill
   }
   def eat(newElement: Int, edgeCondition: Boolean) = {
     if (edgeCondition || snakeBody.contains(newElement)) {
