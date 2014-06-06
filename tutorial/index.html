@@ -20,8 +20,8 @@
       <div>
          <h2>Actors</h2>
          The Actor Model represents objects and their interactions, resembling human organizations.
-         Actors have addresses on which messages can be send by tell or ! operator. 
-         Every Actor class must inherit akka.actor.Actor trait and implement receive method where message handing happens.
+         Actors have addresses on which messages can be send by <code>tell</code> or <code>!</code> operator. 
+         Every Actor class must inherit <code>akka.actor.Actor</code> trait and implement receive method where message handing happens.
          <pre><code>
 	class SnakePool(webSocketChannel: ActorRef) extends Actor {
 	  ...
@@ -34,7 +34,7 @@
          <pre><code>
 	 context.actorOf(Snake.props(apple, snakeName, webSocketChannel), snakeName)
 	</code></pre>
-         Method actorOf accepts Akka.props, but parameteres to actor's constructor can be passed easily by defining a helper function in actor's companion object
+         Method <code>actorOf</code> accepts <code>Akka.props</code> but parameteres to actor's constructor can be passed easily by defining a helper function in actor's companion object:
          <pre><code>
 	object SnakePool {
 	  def props(webSocketChannel: ActorRef): Props = Props(new SnakePool(webSocketChannel))
@@ -51,25 +51,50 @@
 	  ...
 	}
 	</code></pre>
-         <b>Stopping Actors</p>
+         <b>Stopping Actors</b></p>
          There are several ways to <a href="http://doc.akka.io/docs/akka/snapshot/scala/actors.html">stop an actor</a>
-         In the example application asynchronous stop is used by sending PoisonPill message. 
-         The postStop hook is invoked after an actor is fully stopped. This enables cleaning up of resources. In the example application
-         SnakePool has reference to all snakes in the pool and upon game over, pool is removed and it cleans all snakes corresponding to this pool.
+         In the example application asynchronous stop is used by sending <code>PoisonPill</code> message.
+         The following line of code show how  <a href="#app/snakeyard/actor/Snake.scala" class="shortcut">snake</a> dies when eats its tale
+         <code>self ! PoisonPill</code>
+         
+         Note that all snakes die when at least one eats its tale. <a href="#app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> supervisor who listens for Terminated child messages
+         after register snakes with<code>DeathWatch</code>.
+          <pre><code>
+            case NewSnake(snakeName) => {
+		      val snake = context.actorOf(Snake.props(apple, snakeName, webSocketChannel), snakeName)
+		      snake ! Start
+		      snakes += (snakeName -> snake)
+		      context.watch(snake)
+		    }
+ 		    case t: Terminated => self ! PoisonPill
+          </code></pre>
+          
+         The <code>postStop</code> hook is invoked after an actor is fully stopped. This enables cleaning up of resources. In the example application
+         <code>SnakePool</code> has reference to all snakes in the pool and upon game over, pool is removed and it cleans all snakes corresponding to this pool.
          <pre><code>
-	class SnakePool(webSocketChannel: ActorRef) extends Actor {
-	  var snakes = Map.empty[String, ActorRef]
-	  ...
-	  override def postStop() {
-		snakes.map(snakeByName => snakeByName._2 ! Kill)
-	  }
-	  ...
-	}
-	</code></pre>
-         <b>Fetch and Actor</b>
-         In order to fetch already created snake pool by name, actorSelection is used. Its argument is actor path <code>
+			class SnakePool(webSocketChannel: ActorRef) extends Actor {
+			  var snakes = Map.empty[String, ActorRef]
+			  ...
+			  override def postStop() {
+				snakes.map(snakeByName => snakeByName._2 ! Kill)
+			  }
+			  ...
+			}
+		</code></pre>
+		 <b>Supervision</b>
+		 supervision describes a dependency relationship between actors: the supervisor delegates tasks to subordinates and therefore must respond to their failures.
+		 <a href="http://doc.akka.io/docs/akka/snapshot/general/supervision.html">Here</a> you can find information about supervision. The following code will stop all snakes
+		 in case snake throws unhandled exception.
+		 <pre><code>
+			 class SnakePool(webSocketChannel: ActorRef) extends Actor {
+	  			override val supervisorStrategy = AllForOneStrategy() {
+	    			case anyException => Stop //if something happens to one snake, kill them all
+	  		 }
+		 </code></pre> 
+         <b>Fetch and Actor</b></p>
+         <code>actorSelection</code> is used to fetch already created snake pool by name. Its argument is actor path <code>
          Akka.system.actorSelection("/user/" + snakePoolName)
-         </code>
+         </code></p>
          <b>Sending a message</b>
          <pre><code>
 	snakePool ! NewSnake(snakeName)
@@ -78,10 +103,10 @@
       </div>
       <div>
          <h2>Web Sockets</h2>
-         Web Sockets is a next-generation bidirectional communication technology for web applications which operates over a single socket and is exposed via a JavaScript interface in HTML 5 compliant browsers.
-         <b>creating of web socket example</b>
+         Web Sockets is a next-generation bidirectional communication technology for web applications which operates over a single socket and is exposed via a JavaScript interface in HTML 5 compliant browsers.</p>
+         <b>Creating a web socket example</b>
+		 <a href="#app/assets/javascript/snake.js" class="shortcut">snake.js</a>
          <pre><code>
-	...snake.js
 	 function startGame(row, col) {
 		 for ( i = 1; i <= row*col; i++) {		  
 			 off(i)
@@ -111,29 +136,29 @@
 	  }
 	}
 	</code></pre>
-         In order to have startGame function exposed you need to change routes file accordingly
+         In order to have <code>startGame</code> function exposed you need to change routes file accordingly
          <pre><code>
 	GET   /startgame         snakeyard.SnakeController.startGame
 	</code></pre>
-         <b>send and receive messages</b>
-         Once you get a Web Socket connection with the web server, you can send data from browser to server by calling a send() method, and receive data from server to browser by an onmessage event handler.
-         In the example application when socket is open, browser send get pool command and pool name is returned. Pool is keept for future requests, for example to add or move a snake in the pool.
-         <b>send a message to server</b>
+         <b>Send and receive messages</b></p>
+         Once you get a Web Socket connection with the web server, you can send data from browser to server by calling a <code>send()</code> method, and receive data from server to browser by an <code>onmessage</code> event handler.
+         In the example application when socket is open, browser send get pool command and pool name is returned. Pool is keept for future requests, for example to add or move a snake in the pool.</p>
+         <b>Send a message to server</b>
+		 <a href="#app/assets/javascript/snake.js" class="shortcut">snake.js</a>
          <pre><code>
-	...snake.js
 	 function onOpen(evt, snake_name) {
 		 writeToScreen("CONNECTED");
 		 websocket.send("GET POOL");
 		 enableSnakesButton();
 	 }
 	</code></pre>
-         <b>receive a message from client</b>
+         <b>Receive a message from client</b></p>
          In relation to the snippet above, when get pool request is sent, pool name is returned
          <pre><code>
 	val in = Iteratee.foreach[String] { msg => if (msg == "GET POOL") channel.push("POOL:" + snakePool.path.name); }
 	</code></pre>
-         <b>send message froms server</b>
-         WebSocketChannel keeps a reference to web socket and sends information when Send message is triggerd
+         <b>Send message froms server</b></p>
+         <code>WebSocketChannel</code> keeps a reference to web socket and sends information when <code>Send</code> message is triggerd
          <pre><code>
 	class WebSocketChannel(channel: Concurrent.Channel[String]) extends Actor {
 		def receive = {
@@ -141,8 +166,8 @@
 		}
 	}
 	</code></pre>
-         <b>receive a message from server</b>
-         When information from server is received, onMessage is triggered. In the example application onMessages change background colour of related cells accordingly.
+         <b>Receive a message from server</b></p>
+         When information from server is received <code>onMessage</code> is triggered. In the example application <code>onMessage</code> changes background colour of related cells accordingly.
          <pre><code>
 	function onMessage(evt, snake_name) {
 		 if (evt.data.lastIndexOf("POOL:", 0) === 0) { snake_pool = evt.data.replace("POOL:","");}
@@ -158,11 +183,12 @@
       </div>
       <div>
          <h2>Testing Actors</h2>
-         Tests can only verify externally observable effects. The example bellow show how the asynchronous messages are verified using remove-controlled actor TestProbe.
+         Tests can only verify externally observable effects. The example bellow show how the asynchronous messages are verified using remove-controlled actor <code>TestProbe</code>.
          <pre><code>
 	class SnakeTest extends TestKit(ActorSystem("SnakeTest"))
 	  with FunSpec {
-		
+
+
 	  describe("Snake Actor Test") {
 		it("given new snake when started starts to the right, from thee first cell on the first line") {
 		  val apple = TestProbe()
@@ -195,7 +221,8 @@
 		  val random = mock[Random]
 		  random.nextInt(SnakePoolConfig.row * SnakePoolConfig.col - 1) returns 123
 		  val apple = system.actorOf(Apple.props(random, channel.ref), appleName)
-		  
+
+
 		  //when
 		  apple ! NewApple
 		  client.send(apple, Eat(135)) 
@@ -208,4 +235,3 @@
          You can find more information on testing actors <a href="http://doc.akka.io/docs/akka/snapshot/scala/testing.html">here</a>
       </div>
    </body>
-</html>
