@@ -5,8 +5,8 @@
    <body>
       <div>
          <h2>Reactive Snake Activator Template</h2>
-         This template uses the popular snake game as an inbrowser app to demonstrate akka actors using web sockets.
-         Actor Model gives a very natural representation of domain logic by resembling real objects and its interactioncs. I think this makes the code clearer and easy to read.
+         This template uses the popular snake game as an inbrowser app to demonstrate Akka actors using web sockets.
+         Actor Model gives a very natural representation of domain logic by resembling real objects and its interactions. I think this makes the code clearer and easy to read.
          <a href="#code/app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> represents a bundle of snakes, it can create snakes and upon game over kill them all. 
          <a href="#code/app/snakeyard/actor/Snake.scala" class="shortcut">Snake</a> represents a single snake, having cell coordinates as an internal state. Snake can be started, moved (Up, Down, Left or Right) or eat apples. All 
          snakes strive for the one apple. Currently <a href="#code/app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> can be created or is eaten. When apple is eaten, a new one is created.  The application can be easily extended with more apples, since <a href="#code/app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> is also an actor. 
@@ -15,11 +15,11 @@
          <br/>
          All browser requests are handled by <a href="#code/app/snakeyard/actor/SnakeController.scala" class="shortcut">SnakeController</a>.
          <br/>
-         More than one snake pool can run concurrently, if you want to see the power of concurrency and actors, you may test application on tho browser instances.
+         More than one snake pool can run concurrently, if you want to see the power of concurrency and actors, you may test application on two browser instances.
       </div>
       <div>
          <h2>Actors</h2>
-         The Actor Model represents objects and their interactions, resembling human organizations.
+         The Actor Model represents objects and their interactions, resembling human organisations.
          Actors have addresses on which messages can be send by <code>tell</code> or <code>!</code> operator. 
          Every Actor class must inherit <code>akka.actor.Actor</code> trait and implement receive method where message handing happens.
     <pre><code>
@@ -34,7 +34,7 @@ class SnakePool(webSocketChannel: ActorRef) extends Actor {
          <pre><code>
 context.actorOf(Snake.props(apple, snakeName, webSocketChannel), snakeName)
 	</code></pre>
-         Method <code>actorOf</code> accepts <code>Akka.props</code> but parameteres to actor's constructor can be passed easily by defining a helper function in actor's companion object:
+         Method <code>actorOf</code> accepts <code>Akka.props</code> but parameters to actor's constructor can be passed easily by defining a helper function in actor's companion object:
     <pre><code>
 object SnakePool {
   def props(webSocketChannel: ActorRef): Props = Props(new SnakePool(webSocketChannel))
@@ -104,7 +104,7 @@ snakePool ! NewSnake(snakeName)
       </div>
       <div>
          <h2>Web Sockets</h2>
-         Web Sockets is a next-generation bidirectional communication technology for web applications which operates over a single socket and is exposed via a JavaScript interface in HTML 5 compliant browsers.<br><br>
+         Web Sockets is a next-generation bidirectional communication technology for web applications which operates over a single socket and is exposed via a JavaScript interface in HTML 5 complaint browsers.<br><br>
          <b>Creating a web socket example</b><br>
          <pre><code>
 <a href="#code/app/assets/javascript/snake.js" class="shortcut">snake.js</a>
@@ -158,8 +158,8 @@ function onOpen(evt, snake_name) {
          <pre><code>
 val in = Iteratee.foreach[String] { msg => if (msg == "GET POOL") channel.push("POOL:" + snakePool.path.name); }
 	</code></pre>
-         <b>Send message froms server</b><br><br>
-         <code>WebSocketChannel</code> keeps a reference to web socket and sends information when <code>Send</code> message is triggerd
+         <b>Send message from server</b><br><br>
+         <code>WebSocketChannel</code> keeps a reference to web socket and sends information when <code>Send</code> message is triggered
          <pre><code>
 class WebSocketChannel(channel: Concurrent.Channel[String]) extends Actor {
 	def receive = {
@@ -205,8 +205,8 @@ class SnakeTest extends TestKit(ActorSystem("SnakeTest"))
 	...
 }
 	</code></pre>
-         Using multible test probes, you can verify conversation content and order of multiple actors.
-         The second exampe uses mockito mock object and test probe. It shows you how you can inject mocked behaviour in an actor. In order to control what numbers
+         Using multiple test probes, you can verify conversation content and order of multiple actors.
+         The second example uses mockito mock object and test probe. It shows you how you can inject mocked behaviour in an actor. In order to control what numbers
          are random in the test, random instance is passed to Apple actor. In a test environment instead of real instance it can be mocked.
          <pre><code>
 class AppleTest extends TestKit(ActorSystem("AppleTest"))
