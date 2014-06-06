@@ -8,6 +8,8 @@ import akka.actor.ActorRef
 import akka.actor.PoisonPill
 import akka.actor.Props
 
+import scala.language.postfixOps
+
 object SnakeConfig {
   val marchTimeSeconds = 1
 }
