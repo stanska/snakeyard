@@ -10,18 +10,18 @@
          <a href="#code/app/snakeyard/actor/SnakePool.scala" class="shortcut">SnakePool</a> represents a bundle of snakes, it can create snakes and upon game over kill them all. 
          <a href="#code/app/snakeyard/actor/Snake.scala" class="shortcut">Snake</a> represents a single snake, having cell coordinates as an internal state. Snake can be started, moved (Up, Down, Left or Right) or eat apples. All 
          snakes strive for the one apple. Currently <a href="#code/app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> can be created or is eaten. When apple is eaten, a new one is created.  The application can be easily extended with more apples, since <a href="#code/app/snakeyard/actor/Apple.scala" class="shortcut">Apple</a> is also an actor. 
-         Snakes and apple need to send data to browser via web socket. In order to have web socket writing encapsulated we have <a href="#code/app/snakeyard/actor/WebSocketChannel.scala" class="shortcut">WebSocketChannel</a> which handles Send messages.
+         Snakes and apple need to send data to browser via web socket. In order to have web socket writing encapsulated we have <a href="#code/app/snakeyard/actor/WebSocketChannel.scala" class="shortcut">WebSocketChannel</a> which handles <code>Send</code> messages.
          WebSocketChannel actor helps unit test verification for Snake and Apple unit tests. 
          <br/>
          All browser requests are handled by <a href="#code/app/snakeyard/actor/SnakeController.scala" class="shortcut">SnakeController</a>.
          <br/>
-         More than one snake pool can run concurrently, if you want to see the power of concurrency and actors, you may test application on two browser instances.
+         More than one snake pool can run concurrently, if you want to see the power of concurrency and actors, you may test application on two browser instances.<br/>
       </div>
       <div>
          <h2>Actors</h2>
          The Actor Model represents objects and their interactions, resembling human organisations.
-         Actors have addresses on which messages can be send by <code>tell</code> or <code>!</code> operator. 
-         Every Actor class must inherit <code>akka.actor.Actor</code> trait and implement receive method where message handing happens.
+         Actors have addresses on which messages can be send by <code>tell</code> or <code>!</code> method. 
+         Every Actor class must inherit <code>akka.actor.Actor</code> trait and implement receive method where message handling happens.
     <pre><code>
 class SnakePool(webSocketChannel: ActorRef) extends Actor {
   ...
@@ -82,7 +82,7 @@ class SnakePool(webSocketChannel: ActorRef) extends Actor {
   ...
 }
 	</code></pre>
-		 <b>Supervision</b><br/>
+		 <b>Supervision</b><br/><br/>
 		 <p>Supervision describes a dependency relationship between actors: the supervisor delegates tasks to subordinates and therefore must respond to their failures.
 		 <a href="http://doc.akka.io/docs/akka/snapshot/general/supervision.html">Here</a> you can find information about supervision. The following code will stop all snakes
 		 in case snake throws unhandled exception.<br>
@@ -92,7 +92,7 @@ class SnakePool(webSocketChannel: ActorRef) extends Actor {
 		case anyException => Stop //if something happens to one snake, kill them all
 }</code></pre> 
 The <code>AllForOneStrategy</code> is applicable in cases where the ensemble of children has such tight dependencies among them, that a failure of one child affects the function of the others.</br></br>
-         <b>Fetch and Actor</b><br></br>
+         <b>Fetch an Actor</b><br></br>
          <code>actorSelection</code> is used to fetch already created snake pool by name. Its argument is actor path <code>
          Akka.system.actorSelection("/user/" + snakePoolName)
          </code><br></br>
@@ -101,6 +101,7 @@ The <code>AllForOneStrategy</code> is applicable in cases where the ensemble of 
 snakePool ! NewSnake(snakeName)
 	</code></pre>
          More information on <a href="http://doc.akka.io/docs/akka/snapshot/scala/actors.html">actors</a>
+	     <br/>
       </div>
       <div>
          <h2>Web Sockets</h2>
