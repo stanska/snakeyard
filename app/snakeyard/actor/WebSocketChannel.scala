@@ -6,6 +6,13 @@ import akka.actor.Actor
 
 case class Send(data:String)
 
+/**
+ * Factory for [[snakeyard.actor.WebSocketChannel]] instances. 
+ * 
+ * 
+ * WebSocketChannel actor is created with a string output channel as a parameter, where
+ * all send messages are pushed. 
+ */
 object WebSocketChannel {
 	def props(channel: Concurrent.Channel[String]):Props = Props(new WebSocketChannel(channel))
 }

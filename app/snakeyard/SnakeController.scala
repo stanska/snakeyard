@@ -8,17 +8,32 @@ import play.api.mvc.Action
 import play.api.mvc.Controller
 import play.api.mvc.WebSocket
 import play.libs.Akka
-import snakeyard.actor.WebSocketChannel
-import snakeyard.actor.SnakePool
-import snakeyard.actor.NewSnake
 import snakeyard.actor.ChangeDirection
+import snakeyard.actor.NewSnake
+import snakeyard.actor.SnakePool
+import snakeyard.actor.WebSocketChannel
 
+/**
+ * SnakeController handles all incoming requests from snake's user interface:
+ * GET   /                  snakeyard.SnakeController.index
+ * GET   /startgame         snakeyard.SnakeController.startGame
+ * GET   /addsnake/:pool    snakeyard.SnakeController.addSnake(pool)
+ * GET   /movesnake/:pool   snakeyard.SnakeController.move(pool)
+ * GET   /stopgame/:pool    snakeyard.SnakeController.stop(pool)
+ *
+ */
 object SnakeController extends Controller {
 
+  /**
+   * Show snake's starting page
+   */
   def index() = Action {
     Ok(views.html.snake.render)
   }
 
+  /**
+   * opens web socket where actors will push data, and creates snake pool
+   */
   def startGame = WebSocket.using[String] { request =>
     val (out, channel) = Concurrent.broadcast[String]
     val webSocketChannel = Akka.system.actorOf(WebSocketChannel.props(channel))
@@ -27,6 +42,9 @@ object SnakeController extends Controller {
     (in, out)
   }
 
+  /**
+   * Adds snake in the pool
+   */
   def addSnake(snakePoolName: String) = Action { implicit request =>
     {
       val snakeName = request.getQueryString("snake_name").get
@@ -36,11 +54,14 @@ object SnakeController extends Controller {
     }
   }
 
+  /**
+   * Receives move snake request
+   */
   def move(snakePoolName: String) = Action {
     implicit request =>
       {
         val coordinates = request.getQueryString("coordinates")
-        		
+
         val snakePoolActor = Akka.system.actorSelection("/user/" + snakePoolName)
         snakePoolActor.tell(ChangeDirection(toInt(coordinates)))
         Ok("accepted")
@@ -56,6 +77,9 @@ object SnakeController extends Controller {
     intValue.getOrElse(-1)
   }
 
+  /**
+   * Stop game - stop pool and snakes.
+   */
   def stop(snakePool: String) = Action {
     val snake = Akka.system.actorSelection("/user/" + snakePool)
     snake.tell(PoisonPill)

@@ -3,6 +3,7 @@
  var websocket = new Object()
  var snake_counter = 0;
  var snake_pool = "";
+
  window.onbeforeunload = function () {
      websocket.onclose = function () {}; // disable onclose handler first
      websocket.close()
